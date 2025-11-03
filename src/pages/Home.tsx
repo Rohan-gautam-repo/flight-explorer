@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { Flight, SearchParams } from '../types/flight';
 import { FlightSearchForm } from '../components/FlightSearchForm';
 import { FlightList } from '../components/FlightList';
@@ -6,8 +6,8 @@ import { getAllFlights } from '../services/flightApi';
 
 export function Home() {
   const [allFlights, setAllFlights] = useState<Flight[]>([]);
-  const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [filteredFlights, setFilteredFlights] = useState<Flight[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,45 +29,73 @@ export function Home() {
     loadFlights();
   }, []);
 
-  // Client-side filtering with useMemo
-  const filteredFlights = useMemo(() => {
-    if (!searchParams || !hasSearched) {
-      return [];
-    }
+  const handleSearch = (params: SearchParams) => {
+    console.log('🔍 Search initiated with params:', params);
+    setHasSearched(true);
+    
+    let results = [...allFlights];
+    console.log('📊 Total flights available:', results.length);
 
-    let results = allFlights;
+    // If no search params provided, show all flights
+    if (!params.flightNumber && !params.origin && !params.destination) {
+      console.log('✅ Showing all flights');
+      setFilteredFlights(results);
+      return;
+    }
 
     // Filter by flight number
-    if (searchParams.flightNumber) {
-      const searchTerm = searchParams.flightNumber.toUpperCase().trim();
-      results = results.filter(flight =>
-        flight.flightNumber.toUpperCase().includes(searchTerm)
-      );
-    }
-
-    // Filter by route (origin and destination)
-    if (searchParams.origin && searchParams.destination) {
-      const origin = searchParams.origin.toUpperCase().trim();
-      const destination = searchParams.destination.toUpperCase().trim();
-      
+    if (params.flightNumber) {
+      const searchTerm = params.flightNumber.toUpperCase().trim();
+      console.log('🔎 Searching by flight number:', searchTerm);
       results = results.filter(flight => {
-        const matchesOrigin = 
-          flight.origin.toUpperCase() === origin ||
-          flight.originCity.toUpperCase().includes(origin);
-        const matchesDestination = 
-          flight.destination.toUpperCase() === destination ||
-          flight.destinationCity.toUpperCase().includes(destination);
-        
-        return matchesOrigin && matchesDestination;
+        const matches = flight.flightNumber.toUpperCase().includes(searchTerm);
+        if (matches) {
+          console.log('✅ Match found:', flight.flightNumber);
+        }
+        return matches;
       });
     }
 
-    return results;
-  }, [allFlights, searchParams, hasSearched]);
+    // Filter by route
+    const hasOrigin = !!params.origin?.trim();
+    const hasDestination = !!params.destination?.trim();
+    
+    if (hasOrigin && hasDestination) {
+      const origin = params.origin!.toUpperCase().trim();
+      const destination = params.destination!.toUpperCase().trim();
+      console.log('🔎 Searching by route:', origin, '→', destination);
+      results = results.filter(flight => {
+        const matches = flight.origin.toUpperCase() === origin &&
+                       flight.destination.toUpperCase() === destination;
+        if (matches) {
+          console.log('✅ Match found:', flight.flightNumber, flight.origin, '→', flight.destination);
+        }
+        return matches;
+      });
+    } else if (hasOrigin) {
+      const origin = params.origin!.toUpperCase().trim();
+      console.log('🔎 Searching by origin:', origin);
+      results = results.filter(flight => {
+        const matches = flight.origin.toUpperCase() === origin;
+        if (matches) {
+          console.log('✅ Match found:', flight.flightNumber, 'from', flight.origin);
+        }
+        return matches;
+      });
+    } else if (hasDestination) {
+      const destination = params.destination!.toUpperCase().trim();
+      console.log('🔎 Searching by destination:', destination);
+      results = results.filter(flight => {
+        const matches = flight.destination.toUpperCase() === destination;
+        if (matches) {
+          console.log('✅ Match found:', flight.flightNumber, 'to', flight.destination);
+        }
+        return matches;
+      });
+    }
 
-  const handleSearch = async (params: SearchParams) => {
-    setSearchParams(params);
-    setHasSearched(true);
+    console.log('📊 Search results:', results.length, 'flights found');
+    setFilteredFlights(results);
   };
 
   // Show error state
@@ -96,13 +124,13 @@ export function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Form */}
         <div className="mb-8">
-          <FlightSearchForm onSearch={handleSearch} isLoading={isLoading} />
+          <FlightSearchForm onSearch={handleSearch} isLoading={false} />
         </div>
 
         {/* Flight Results */}
         <FlightList 
           flights={filteredFlights} 
-          isLoading={isLoading && !hasSearched} 
+          isLoading={isLoading} 
           hasSearched={hasSearched} 
         />
       </div>

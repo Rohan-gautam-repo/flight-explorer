@@ -1,19 +1,123 @@
-# React + TypeScript + Vite
+# ✈️ Flight Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, real-time flight tracking and search application built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-time Flight Search**: Search flights by flight number or route
+- **Live Flight Status**: Get up-to-date information on flight status, delays, and gates
+- **Watchlist**: Save and track your favorite flights
+- **Responsive Design**: Beautiful UI that works on all devices
+- **Smart Filtering**: Intelligent search with validation and helpful error messages
 
-## React Compiler
+## 🚀 Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
+- Node.js 16+ and npm installed
 
-## Expanding the ESLint configuration
+### Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## 🔍 How to Use
+
+### Search by Flight Number
+1. Click the **"Flight Number"** tab
+2. Enter a flight number (e.g., `AA123` or just `AA` for all American Airlines flights)
+3. Click **"Search Flights"**
+
+### Search by Route
+1. Click the **"Route"** tab
+2. Enter origin airport code (e.g., `JFK`, `LAX`, `ORD`)
+3. Enter destination airport code (e.g., `MIA`, `DEN`, `ATL`)
+4. You can search by origin only, destination only, or both
+5. Click **"Search Flights"**
+
+### View All Flights
+- Click **"Show All Flights"** to see all available flights
+
+### Manage Watchlist
+- Click the **bookmark icon** on any flight card to add it to your watchlist
+- Navigate to **"My Watchlist"** from the header to view saved flights
+- Click the bookmark again to remove from watchlist
+
+## 📁 Project Structure
+
+```
+flight-explorer/
+├── src/
+│   ├── api/              # API integration
+│   ├── components/       # React components
+│   ├── contexts/         # React context (state management)
+│   ├── hooks/            # Custom React hooks
+│   ├── pages/            # Page components
+│   ├── services/         # Business logic services
+│   └── types/            # TypeScript type definitions
+├── public/               # Static assets
+└── test-api.js          # API testing utility
+```
+
+See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for detailed documentation.
+
+## 🛠️ Tech Stack
+
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **React Router** - Navigation
+- **Axios** - HTTP client
+- **React Icons** - Icon library
+
+## 🔧 Recent Fixes
+
+✅ Fixed search functionality not working  
+✅ Removed duplicate files and cleaned up directory structure  
+✅ Fixed type conflicts between different Flight interfaces  
+✅ Improved API integration and error handling  
+✅ Added comprehensive logging for debugging  
+
+## 🧪 Testing the API
+
+Run the API test script to verify connectivity:
+
+```bash
+node test-api.js
+```
+
+## 📝 API Information
+
+- **Endpoint**: `https://flight-explorer-api.codewalnut.com/api/flights`
+- **Fallback**: Local mock data at `/mock/flights.json`
+- **Format**: Returns `{ flights: Flight[] }`
+
+## 🐛 Debugging
+
+Open browser DevTools (F12) and check the Console for detailed search logs:
+- 🔍 Search parameters
+- 📊 Flight counts
+- ✅ Match results
+
+## 📄 License
+
+MIT License
+
+## 👨‍💻 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
 
 ```js
 export default defineConfig([

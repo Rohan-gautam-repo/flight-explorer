@@ -10,6 +10,12 @@ interface FlightListProps {
 }
 
 export function FlightList({ flights, isLoading, hasSearched }: FlightListProps) {
+  console.log('🎨 FlightList: Rendering with props:', {
+    flightsCount: flights.length,
+    isLoading,
+    hasSearched
+  });
+  
   if (isLoading) {
     return <LoadingSkeleton />;
   }

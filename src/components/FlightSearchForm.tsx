@@ -1,19 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import type { SearchParams } from '../types/flight';
-import { getAllFlights } from '../services/flightApi';
-import { useDebounce } from '../hooks/useDebounce';
 
 interface FlightSearchFormProps {
   onSearch: (params: SearchParams) => void;
   isLoading: boolean;
-}
-
-interface AirportSuggestion {
-  code: string;
-  city: string;
-  name: string;
 }
 
 export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps) {
@@ -22,64 +14,6 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [airports, setAirports] = useState<AirportSuggestion[]>([]);
-  const [showOriginSuggestions, setShowOriginSuggestions] = useState(false);
-  const [showDestinationSuggestions, setShowDestinationSuggestions] = useState(false);
-
-  // Debounce the search inputs
-  const debouncedOrigin = useDebounce(origin, 300);
-  const debouncedDestination = useDebounce(destination, 300);
-
-  // Load airports from flights on mount
-  useEffect(() => {
-    const loadAirports = async () => {
-      try {
-        const flights = await getAllFlights();
-        const airportMap = new Map<string, AirportSuggestion>();
-
-        flights.forEach(flight => {
-          if (!airportMap.has(flight.origin)) {
-            airportMap.set(flight.origin, {
-              code: flight.origin,
-              city: flight.originCity,
-              name: `${flight.origin} - ${flight.originCity}`
-            });
-          }
-          if (!airportMap.has(flight.destination)) {
-            airportMap.set(flight.destination, {
-              code: flight.destination,
-              city: flight.destinationCity,
-              name: `${flight.destination} - ${flight.destinationCity}`
-            });
-          }
-        });
-
-        setAirports(Array.from(airportMap.values()).sort((a, b) => a.code.localeCompare(b.code)));
-      } catch (error) {
-        console.error('Error loading airports:', error);
-      }
-    };
-    loadAirports();
-  }, []);
-
-  // Filter airport suggestions
-  const originSuggestions = useMemo(() => {
-    if (!debouncedOrigin || debouncedOrigin.length < 1) return [];
-    const search = debouncedOrigin.toUpperCase();
-    return airports.filter(airport => 
-      airport.code.startsWith(search) || 
-      airport.city.toUpperCase().includes(search)
-    ).slice(0, 5);
-  }, [debouncedOrigin, airports]);
-
-  const destinationSuggestions = useMemo(() => {
-    if (!debouncedDestination || debouncedDestination.length < 1) return [];
-    const search = debouncedDestination.toUpperCase();
-    return airports.filter(airport => 
-      airport.code.startsWith(search) || 
-      airport.city.toUpperCase().includes(search)
-    ).slice(0, 5);
-  }, [debouncedDestination, airports]);
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
@@ -89,17 +23,18 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
         newErrors.flightNumber = 'Flight number is required';
       }
     } else {
-      if (!origin.trim()) {
-        newErrors.origin = 'Origin airport is required';
-      } else if (origin.trim().length !== 3) {
-        newErrors.origin = 'Airport code must be 3 letters';
+      const hasOrigin = !!origin.trim();
+      const hasDestination = !!destination.trim();
+
+      // Require at least one of origin or destination
+      if (!hasOrigin && !hasDestination) {
+        newErrors.origin = 'Enter origin and/or destination';
+        newErrors.destination = 'Enter origin and/or destination';
       }
-      if (!destination.trim()) {
-        newErrors.destination = 'Destination airport is required';
-      } else if (destination.trim().length !== 3) {
-        newErrors.destination = 'Airport code must be 3 letters';
-      }
-      if (origin.trim().toUpperCase() === destination.trim().toUpperCase()) {
+
+      // If both provided, they must be different
+      if (hasOrigin && hasDestination &&
+          origin.trim().toUpperCase() === destination.trim().toUpperCase()) {
         newErrors.destination = 'Origin and destination must be different';
       }
     }
@@ -116,12 +51,14 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
     }
 
     if (searchMode === 'flightNumber') {
-      onSearch({ flightNumber: flightNumber.trim() });
-    } else {
       onSearch({ 
-        origin: origin.trim().toUpperCase(), 
-        destination: destination.trim().toUpperCase() 
+        flightNumber: flightNumber.trim().toUpperCase()
       });
+    } else {
+      const params: { origin?: string; destination?: string } = {};
+      if (origin.trim()) params.origin = origin.trim().toUpperCase();
+      if (destination.trim()) params.destination = destination.trim().toUpperCase();
+      onSearch(params);
     }
   };
 
@@ -173,15 +110,15 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
               id="flightNumber"
               value={flightNumber}
               onChange={(e) => {
-                setFlightNumber(e.target.value);
+                setFlightNumber(e.target.value.toUpperCase());
                 if (errors.flightNumber) {
                   setErrors({ ...errors, flightNumber: '' });
                 }
               }}
-              placeholder="e.g., AA123"
+              placeholder="e.g., AA123 or AA"
               className={`w-full px-4 py-3 rounded-lg border ${
                 errors.flightNumber ? 'border-red-300' : 'border-gray-300'
-              } focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
+              } focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
             />
             {errors.flightNumber && (
               <p className="text-red-500 text-sm mt-1">{errors.flightNumber}</p>
@@ -189,7 +126,7 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="relative">
+            <div>
               <label htmlFor="origin" className="block text-sm font-medium text-gray-700 mb-2">
                 Origin Airport
               </label>
@@ -199,41 +136,18 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
                 value={origin}
                 onChange={(e) => {
                   setOrigin(e.target.value.toUpperCase());
-                  setShowOriginSuggestions(true);
                   if (errors.origin) {
                     setErrors({ ...errors, origin: '' });
                   }
                 }}
-                onFocus={() => setShowOriginSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowOriginSuggestions(false), 200)}
-                placeholder="e.g., JFK or New York"
+                placeholder="e.g., JFK or MIA"
                 className={`w-full px-4 py-3 rounded-lg border ${
                   errors.origin ? 'border-red-300' : 'border-gray-300'
                 } focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
               />
               {errors.origin && <p className="text-red-500 text-sm mt-1">{errors.origin}</p>}
-              
-              {/* Origin Suggestions */}
-              {showOriginSuggestions && originSuggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                  {originSuggestions.map((airport) => (
-                    <button
-                      key={airport.code}
-                      type="button"
-                      onClick={() => {
-                        setOrigin(airport.code);
-                        setShowOriginSuggestions(false);
-                      }}
-                      className="w-full px-4 py-2 text-left hover:bg-blue-50 transition"
-                    >
-                      <div className="font-semibold text-gray-900">{airport.code}</div>
-                      <div className="text-sm text-gray-600">{airport.city}</div>
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
-            <div className="relative">
+            <div>
               <label htmlFor="destination" className="block text-sm font-medium text-gray-700 mb-2">
                 Destination Airport
               </label>
@@ -243,40 +157,17 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
                 value={destination}
                 onChange={(e) => {
                   setDestination(e.target.value.toUpperCase());
-                  setShowDestinationSuggestions(true);
                   if (errors.destination) {
                     setErrors({ ...errors, destination: '' });
                   }
                 }}
-                onFocus={() => setShowDestinationSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowDestinationSuggestions(false), 200)}
-                placeholder="e.g., LAX or Los Angeles"
+                placeholder="e.g., LAX or DEN"
                 className={`w-full px-4 py-3 rounded-lg border ${
                   errors.destination ? 'border-red-300' : 'border-gray-300'
                 } focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
               />
               {errors.destination && (
                 <p className="text-red-500 text-sm mt-1">{errors.destination}</p>
-              )}
-              
-              {/* Destination Suggestions */}
-              {showDestinationSuggestions && destinationSuggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                  {destinationSuggestions.map((airport) => (
-                    <button
-                      key={airport.code}
-                      type="button"
-                      onClick={() => {
-                        setDestination(airport.code);
-                        setShowDestinationSuggestions(false);
-                      }}
-                      className="w-full px-4 py-2 text-left hover:bg-blue-50 transition"
-                    >
-                      <div className="font-semibold text-gray-900">{airport.code}</div>
-                      <div className="text-sm text-gray-600">{airport.city}</div>
-                    </button>
-                  ))}
-                </div>
               )}
             </div>
           </div>
@@ -299,6 +190,19 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
               <span>Search Flights</span>
             </>
           )}
+        </button>
+
+        {/* Show All Flights */}
+        <button
+          type="button"
+          disabled={isLoading}
+          onClick={() => {
+            setErrors({});
+            onSearch({}); // show all flights
+          }}
+          className="w-full mt-2 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition"
+        >
+          Show All Flights
         </button>
       </form>
     </div>
