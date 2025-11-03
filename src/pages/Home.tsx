@@ -101,12 +101,12 @@ export function Home() {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-16">
             <div className="text-6xl mb-4">⚠️</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Flights</h3>
-            <p className="text-gray-600 mb-6">{error}</p>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Unable to Load Flights</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
             <button
               onClick={() => window.location.reload()}
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium shadow-sm hover:shadow-md"
@@ -120,7 +120,7 @@ export function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Form */}
         <div className="mb-8">

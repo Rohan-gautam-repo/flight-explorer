@@ -24,11 +24,11 @@ export function FlightList({ flights, isLoading, hasSearched }: FlightListProps)
     return (
       <div className="text-center py-16">
         <div className="text-6xl mb-4">✈️</div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">Search for Flights</h3>
-        <p className="text-gray-600 mb-4">
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Search for Flights</h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
           Enter a flight number or select a route to get started
         </p>
-        <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+        <div className="flex items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center gap-2">
             <FiSearch className="w-4 h-4" />
             <span>Search by flight number</span>
@@ -47,16 +47,16 @@ export function FlightList({ flights, isLoading, hasSearched }: FlightListProps)
     return (
       <div className="text-center py-16">
         <div className="text-6xl mb-4">🔍</div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">No Flights Found</h3>
-        <p className="text-gray-600 mb-6">
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Flights Found</h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
           We couldn't find any flights matching your search criteria
         </p>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 max-w-md mx-auto">
+        <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-4 max-w-md mx-auto">
           <div className="flex items-start gap-3">
-            <FiAlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <FiAlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <div className="text-left">
-              <p className="text-sm text-blue-900 font-medium mb-2">Try these suggestions:</p>
-              <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+              <p className="text-sm text-blue-900 dark:text-blue-300 font-medium mb-2">Try these suggestions:</p>
+              <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1 list-disc list-inside">
                 <li>Check your flight number spelling</li>
                 <li>Verify airport codes are correct</li>
                 <li>Try searching with city names</li>
@@ -72,7 +72,7 @@ export function FlightList({ flights, isLoading, hasSearched }: FlightListProps)
   return (
     <div>
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           {flights.length} {flights.length === 1 ? 'Flight' : 'Flights'} Found
         </h3>
       </div>

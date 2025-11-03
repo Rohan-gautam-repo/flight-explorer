@@ -14,13 +14,13 @@ export function WatchlistPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Watchlist</h1>
-            <p className="text-gray-600">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Watchlist</h1>
+            <p className="text-gray-600 dark:text-gray-400">
               {watchlist.length === 0
                 ? 'No flights saved yet'
                 : `${watchlist.length} ${watchlist.length === 1 ? 'flight' : 'flights'} saved`}
@@ -29,7 +29,7 @@ export function WatchlistPage() {
           {watchlist.length > 0 && (
             <button
               onClick={() => setShowClearConfirm(true)}
-              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition font-medium"
+              className="flex items-center gap-2 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition font-medium"
             >
               <FiTrash2 className="w-4 h-4" />
               <span className="hidden sm:inline">Clear All</span>
@@ -39,10 +39,10 @@ export function WatchlistPage() {
 
         {/* Clear Confirmation */}
         {showClearConfirm && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
-            <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-4 mb-6 flex items-start gap-3">
+            <FiAlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-red-800 font-medium mb-3">
+              <p className="text-red-800 dark:text-red-300 font-medium mb-3">
                 Are you sure you want to remove all flights from your watchlist?
               </p>
               <div className="flex gap-2">
@@ -54,7 +54,7 @@ export function WatchlistPage() {
                 </button>
                 <button
                   onClick={() => setShowClearConfirm(false)}
-                  className="px-4 py-2 bg-white hover:bg-gray-100 text-gray-700 rounded-lg transition font-medium border border-gray-300"
+                  className="px-4 py-2 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition font-medium border border-gray-300 dark:border-gray-600"
                 >
                   Cancel
                 </button>
@@ -67,8 +67,8 @@ export function WatchlistPage() {
         {watchlist.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">⭐</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No Saved Flights</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Saved Flights</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               Start adding flights to your watchlist to keep track of them
             </p>
             <Link

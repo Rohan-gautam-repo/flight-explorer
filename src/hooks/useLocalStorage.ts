@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, Dispatch<SetStateAction<T>>] {
   // Get initial value from localStorage or use provided initial value
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
@@ -21,5 +25,5 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     }
   }, [key, storedValue]);
 
-  return [storedValue, setStoredValue] as const;
+  return [storedValue, setStoredValue];
 }

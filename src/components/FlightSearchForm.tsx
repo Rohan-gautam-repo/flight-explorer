@@ -63,8 +63,8 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Search Flights</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Search Flights</h2>
 
       {/* Search Mode Toggle */}
       <div className="flex gap-2 mb-6">
@@ -77,7 +77,7 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
           className={`flex-1 px-4 py-2 rounded-lg font-medium transition ${
             searchMode === 'flightNumber'
               ? 'bg-blue-600 text-white shadow-sm'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
           }`}
         >
           Flight Number
@@ -91,7 +91,7 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
           className={`flex-1 px-4 py-2 rounded-lg font-medium transition ${
             searchMode === 'route'
               ? 'bg-blue-600 text-white shadow-sm'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
           }`}
         >
           Route
@@ -102,7 +102,7 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
       <form onSubmit={handleSubmit} className="space-y-4">
         {searchMode === 'flightNumber' ? (
           <div>
-            <label htmlFor="flightNumber" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="flightNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Flight Number
             </label>
             <input
@@ -117,17 +117,17 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
               }}
               placeholder="e.g., AA123 or AA"
               className={`w-full px-4 py-3 rounded-lg border ${
-                errors.flightNumber ? 'border-red-300' : 'border-gray-300'
-              } focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
+                errors.flightNumber ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+              } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
             />
             {errors.flightNumber && (
-              <p className="text-red-500 text-sm mt-1">{errors.flightNumber}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.flightNumber}</p>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="origin" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="origin" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Origin Airport
               </label>
               <input
@@ -142,13 +142,13 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
                 }}
                 placeholder="e.g., JFK or MIA"
                 className={`w-full px-4 py-3 rounded-lg border ${
-                  errors.origin ? 'border-red-300' : 'border-gray-300'
-                } focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
+                  errors.origin ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
               />
-              {errors.origin && <p className="text-red-500 text-sm mt-1">{errors.origin}</p>}
+              {errors.origin && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.origin}</p>}
             </div>
             <div>
-              <label htmlFor="destination" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="destination" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Destination Airport
               </label>
               <input
@@ -163,11 +163,11 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
                 }}
                 placeholder="e.g., LAX or DEN"
                 className={`w-full px-4 py-3 rounded-lg border ${
-                  errors.destination ? 'border-red-300' : 'border-gray-300'
-                } focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
+                  errors.destination ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition uppercase`}
               />
               {errors.destination && (
-                <p className="text-red-500 text-sm mt-1">{errors.destination}</p>
+                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.destination}</p>
               )}
             </div>
           </div>
@@ -200,7 +200,7 @@ export function FlightSearchForm({ onSearch, isLoading }: FlightSearchFormProps)
             setErrors({});
             onSearch({}); // show all flights
           }}
-          className="w-full mt-2 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-200 text-gray-800 font-medium py-3 px-6 rounded-lg transition"
+          className="w-full mt-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:bg-gray-200 dark:disabled:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium py-3 px-6 rounded-lg transition"
         >
           Show All Flights
         </button>
