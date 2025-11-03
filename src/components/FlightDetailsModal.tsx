@@ -1,8 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiMapPin, FiClock, FiInfo } from 'react-icons/fi';
+import { FiX, FiMapPin, FiClock, FiInfo, FiAlertCircle } from 'react-icons/fi';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import type { Flight } from '../types/flight';
 import { Badge } from './shared/Badge';
+
+// Extend dayjs with timezone support
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface FlightDetailsModalProps {
   flight: Flight;
@@ -24,6 +30,11 @@ export function FlightDetailsModal({ flight, onClose }: FlightDetailsModalProps)
       default:
         return 'bg-gray-100 text-gray-700';
     }
+  };
+
+  // Format date and time with better readability
+  const formatDateTime = (dateString: string) => {
+    return dayjs(dateString).format('MMM D, YYYY [at] HH:mm');
   };
 
   return (
@@ -111,14 +122,14 @@ export function FlightDetailsModal({ flight, onClose }: FlightDetailsModalProps)
                   <div>
                     <div className="text-gray-600">Scheduled</div>
                     <div className="text-lg font-semibold text-gray-900">
-                      {dayjs(flight.scheduledDeparture).format('MMM D, HH:mm')}
+                      {formatDateTime(flight.scheduledDeparture)}
                     </div>
                   </div>
-                  {flight.estimatedDeparture && (
+                  {flight.estimatedDeparture && flight.estimatedDeparture !== flight.scheduledDeparture && (
                     <div>
                       <div className="text-gray-600">Estimated</div>
                       <div className="text-lg font-semibold text-yellow-700">
-                        {dayjs(flight.estimatedDeparture).format('MMM D, HH:mm')}
+                        {formatDateTime(flight.estimatedDeparture)}
                       </div>
                     </div>
                   )}
@@ -126,7 +137,7 @@ export function FlightDetailsModal({ flight, onClose }: FlightDetailsModalProps)
                     <div>
                       <div className="text-gray-600">Actual</div>
                       <div className="text-lg font-semibold text-green-700">
-                        {dayjs(flight.actualDeparture).format('MMM D, HH:mm')}
+                        {formatDateTime(flight.actualDeparture)}
                       </div>
                     </div>
                   )}
@@ -156,14 +167,14 @@ export function FlightDetailsModal({ flight, onClose }: FlightDetailsModalProps)
                   <div>
                     <div className="text-gray-600">Scheduled</div>
                     <div className="text-lg font-semibold text-gray-900">
-                      {dayjs(flight.scheduledArrival).format('MMM D, HH:mm')}
+                      {formatDateTime(flight.scheduledArrival)}
                     </div>
                   </div>
-                  {flight.estimatedArrival && (
+                  {flight.estimatedArrival && flight.estimatedArrival !== flight.scheduledArrival && (
                     <div>
                       <div className="text-gray-600">Estimated</div>
                       <div className="text-lg font-semibold text-yellow-700">
-                        {dayjs(flight.estimatedArrival).format('MMM D, HH:mm')}
+                        {formatDateTime(flight.estimatedArrival)}
                       </div>
                     </div>
                   )}
@@ -171,7 +182,7 @@ export function FlightDetailsModal({ flight, onClose }: FlightDetailsModalProps)
                     <div>
                       <div className="text-gray-600">Actual</div>
                       <div className="text-lg font-semibold text-green-700">
-                        {dayjs(flight.actualArrival).format('MMM D, HH:mm')}
+                        {formatDateTime(flight.actualArrival)}
                       </div>
                     </div>
                   )}
@@ -193,17 +204,40 @@ export function FlightDetailsModal({ flight, onClose }: FlightDetailsModalProps)
             </div>
 
             {/* Aircraft & Delay Info */}
-            <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Aircraft</span>
-                <span className="font-semibold text-gray-900">{flight.aircraft}</span>
+            <div className="space-y-3">
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Aircraft</span>
+                  <span className="font-semibold text-gray-900">{flight.aircraft}</span>
+                </div>
               </div>
-              {flight.delayMinutes !== undefined && flight.delayMinutes > 0 && (
-                <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                  <span className="text-gray-600">Delay</span>
-                  <span className="font-semibold text-yellow-700">
-                    {flight.delayMinutes} minutes
-                  </span>
+              
+              {flight.delayMinutes !== undefined && flight.delayMinutes !== 0 && (
+                <div className={`rounded-xl p-4 ${
+                  flight.delayMinutes > 0 
+                    ? 'bg-yellow-50 border border-yellow-200' 
+                    : 'bg-green-50 border border-green-200'
+                }`}>
+                  <div className="flex items-start gap-3">
+                    <FiAlertCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                      flight.delayMinutes > 0 ? 'text-yellow-700' : 'text-green-700'
+                    }`} />
+                    <div className="flex-1">
+                      <div className={`font-semibold mb-1 ${
+                        flight.delayMinutes > 0 ? 'text-yellow-900' : 'text-green-900'
+                      }`}>
+                        {flight.delayMinutes > 0 ? 'Flight Delayed' : 'Early Arrival'}
+                      </div>
+                      <div className={`text-sm ${
+                        flight.delayMinutes > 0 ? 'text-yellow-800' : 'text-green-800'
+                      }`}>
+                        {flight.delayMinutes > 0 
+                          ? `This flight is delayed by ${flight.delayMinutes} minutes`
+                          : `This flight arrived ${Math.abs(flight.delayMinutes)} minutes early`
+                        }
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

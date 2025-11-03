@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiTrash2, FiAlertCircle } from 'react-icons/fi';
 import { useWatchlist } from '../contexts/WatchlistContext';
 import { FlightCard } from '../components/FlightCard';
+import { Link } from 'react-router-dom';
 
 export function WatchlistPage() {
   const { watchlist, clearWatchlist } = useWatchlist();
@@ -70,12 +71,12 @@ export function WatchlistPage() {
             <p className="text-gray-600 mb-6">
               Start adding flights to your watchlist to keep track of them
             </p>
-            <a
-              href="/"
+            <Link
+              to="/"
               className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium shadow-sm hover:shadow-md"
             >
               Search Flights
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
