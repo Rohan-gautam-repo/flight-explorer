@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiTrash2, FiAlertCircle } from 'react-icons/fi';
-import { useWatchlist } from '../context/WatchlistContext';
+import { useWatchlist } from '../contexts/WatchlistContext';
 import { FlightCard } from '../components/FlightCard';
 
 export function WatchlistPage() {

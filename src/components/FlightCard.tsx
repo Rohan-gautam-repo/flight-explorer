@@ -3,7 +3,7 @@ import { FiMapPin, FiClock, FiInfo, FiStar } from 'react-icons/fi';
 import dayjs from 'dayjs';
 import type { Flight } from '../types/flight';
 import { Badge } from './shared/Badge';
-import { useWatchlist } from '../context/WatchlistContext';
+import { useWatchlist } from '../contexts/WatchlistContext';
 import { FlightDetailsModal } from './FlightDetailsModal';
 
 interface FlightCardProps {
@@ -75,12 +75,12 @@ export function FlightCard({ flight }: FlightCardProps) {
         <div className="flex items-center justify-between text-sm mb-4">
           <div className="flex items-center gap-1 text-gray-600">
             <FiClock className="w-4 h-4" />
-            <span>{dayjs(flight.departureTime).format('HH:mm')}</span>
+            <span>{dayjs(flight.departureTime).format('MMM D, HH:mm')}</span>
           </div>
           <div className="text-gray-400">{flight.duration}</div>
           <div className="flex items-center gap-1 text-gray-600">
             <FiClock className="w-4 h-4" />
-            <span>{dayjs(flight.arrivalTime).format('HH:mm')}</span>
+            <span>{dayjs(flight.arrivalTime).format('MMM D, HH:mm')}</span>
           </div>
         </div>
 

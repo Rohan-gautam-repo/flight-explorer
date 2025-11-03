@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { WatchlistProvider } from './context/WatchlistContext';
+import { WatchlistProvider } from './contexts/WatchlistContext';
 import { Header } from './components/Header';
 import { Home } from './pages/Home';
 import { WatchlistPage } from './pages/WatchlistPage';

@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { FiHome, FiBookmark } from 'react-icons/fi';
-import { useWatchlist } from '../context/WatchlistContext';
+import { useWatchlist } from '../contexts/WatchlistContext';
 
 export function Header() {
   const { watchlist } = useWatchlist();
